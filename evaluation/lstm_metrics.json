@@ -1,0 +1,5 @@
+{
+    "model": "EfficientNetV2-S + LSTM",
+    "best_validation_accuracy": 0.6943462897526502,
+    "test_accuracy": 0.7291666666666666
+}
