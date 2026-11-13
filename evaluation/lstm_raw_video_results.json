@@ -1,0 +1,10 @@
+{
+    "model": "EfficientNetV2-S + LSTM",
+    "evaluation_type": "Raw video inference",
+    "total_test_videos": 816,
+    "test_accuracy": 0.7291666666666666,
+    "macro_precision": 0.7419516686780113,
+    "macro_recall": 0.707887582642431,
+    "macro_f1": 0.7201203511403905,
+    "weighted_f1": 0.7306583531015108
+}
