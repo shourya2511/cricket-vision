@@ -16,8 +16,7 @@ from torchvision.models import efficientnet_v2_s
 # CONFIGURATION
 # ==================================================
 
-from pathlib import Path
-PROJECT_ROOT = str(Path(__file__).resolve().parent)
+PROJECT_ROOT = "/content/drive/MyDrive/cricket_vision"
 sys.path.insert(0, PROJECT_ROOT)
 
 from dataset_utils import preprocess_video
