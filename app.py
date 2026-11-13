@@ -907,6 +907,7 @@ if page == "Home":
     )
 
 
+
 # ==================================================
 # SHOT PREDICTION PAGE
 # ==================================================
@@ -926,12 +927,69 @@ elif page == "Shot Prediction":
 
     if uploaded_file is not None:
 
-        st.video(uploaded_file)
+        # ------------------------------------------
+        # VIDEO PREVIEW (Convert to H.264)
+        # ------------------------------------------
+
+        video_bytes = uploaded_file.getvalue()
+
+        suffix = os.path.splitext(uploaded_file.name)[1]
+
+        input_path = None
+        preview_path = None
+
+        try:
+            import subprocess
+
+            with tempfile.NamedTemporaryFile(
+                delete=False,
+                suffix=suffix
+            ) as temp_input:
+
+                temp_input.write(video_bytes)
+                input_path = temp_input.name
+
+            preview_path = input_path.rsplit(".", 1)[0] + "_preview.mp4"
+
+            subprocess.run(
+                [
+                    "ffmpeg", "-y",
+                    "-i", input_path,
+                    "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p",
+                    "-preset", "fast",
+                    "-crf", "23",
+                    "-movflags", "+faststart",
+                    "-an",
+                    preview_path
+                ],
+                check=True,
+                capture_output=True
+            )
+
+            with open(preview_path, "rb") as f:
+                preview_bytes = f.read()
+
+            st.video(preview_bytes, format="video/mp4")
+
+        except Exception as e:
+            st.warning(f"Video preview conversion failed: {e}")
+
+        finally:
+            if input_path and os.path.exists(input_path):
+                os.remove(input_path)
+
+            if preview_path and os.path.exists(preview_path):
+                os.remove(preview_path)
 
         st.caption(
             "Recommended: a short clip containing one "
             "clearly visible batting shot."
         )
+
+        # ------------------------------------------
+        # ANALYSE VIDEO
+        # ------------------------------------------
 
         if st.button("Analyse Video", type="primary"):
 
@@ -1037,7 +1095,6 @@ elif page == "Shot Prediction":
 
                 if temp_path and os.path.exists(temp_path):
                     os.remove(temp_path)
-
 
 # ==================================================
 # AUTOMATIC COMMENTARY PAGE
